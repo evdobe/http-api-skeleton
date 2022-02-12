@@ -1,4 +1,20 @@
 services:
-  hello-world:
-    container_name: hello-world
-    build: ../cont/hello-world
+  http-api:
+    build: ../cont/http-api
+    environment:
+      HOST_GID: ${HOST_UID}
+      HOST_UID: ${HOST_UID}
+      PROJECT_NAME: ${PROJECT_NAME}
+      PROJECT_ORG: ${PROJECT_ORG}
+      PROJECT_DESCRIPTION: ${PROJECT_DESCRIPTION}
+      PROJECT_AUTHORS: ${PROJECT_AUTHORS}
+      HTTP_PORT: ${HTTP_PORT}
+      TZ: ${TIME_ZONE}
+      AUTORELOAD_PROGRAMS: "swoole"
+      AUTORELOAD_ANY_FILES: 0
+    expose: 
+    - ${HTTP_PORT}
+    ports: 
+    - ${HTTP_PORT}:${HTTP_PORT}
+    volumes:
+    - ../../../../dev:/var/www

@@ -1,0 +1,13 @@
+{
+    "name": "${PROJECT_NAME}",
+    "description": "${PROJECT_DESCRIPTION}",
+    "authors": "${PROJECT_AUTHORS}",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Infrastructure\\": "src/Infrastructure",
+            "Application\\": "src/Application",
+            "Domain\\": "src/Domain"
+        }
+    }
+}
