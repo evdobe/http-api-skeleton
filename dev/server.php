@@ -1,26 +1,30 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
+use Application\Http\Application;
 
-use Swoole\Http\Request;
-use Swoole\Http\Response;
-use Swoole\Http\Server;
+// Delegate static file requests back to the PHP built-in webserver
+if (PHP_SAPI === 'cli-server' && $_SERVER['SCRIPT_FILENAME'] !== __FILE__) {
+    return false;
+}
 
-$http = new Server("0.0.0.0", 9501);
+chdir(dirname(__DIR__));
+require 'vendor/autoload.php';
 
-$http->on(
-    "start",
-    function (Server $http) {
-        echo "Swoole HTTP server is started.\n";
-    }
-);
-$http->on(
-    "request",
-    function (Request $request, Response $response) {
-        $response->setHeader('Content-Type', 'application/json');
-        $response->end('{"ack":"Hello"}');
-    }
-);
+/**
+ * Self-called anonymous function that creates its own scope and keeps the global namespace clean.
+ */
+(function () {
+    /** @var \Psr\Container\ContainerInterface $container */
+    $container = require 'config/container.php';
 
-$http->start();
+    /** @var Application $app */
+    $app = $container->get(Application::class);
+
+    // Execute programmatic/declarative middleware pipeline and routing
+    // configuration statements
+    (require 'config/pipeline.php')($app);
+    (require 'config/routes.php')($app);
+    
+    $app->run();
+})();

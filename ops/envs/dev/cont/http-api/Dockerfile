@@ -4,11 +4,12 @@ ENV DEPS \
     git \
     zip \
     inotify-tools \
-    libzip-dev
+    libzip-dev \
+    libicu-dev
 
 RUN apt-get clean && apt-get update \
         && apt-get install -y ${DEPS} \ 
-        && docker-php-ext-install zip    
+        && docker-php-ext-install zip intl
 
 COPY target / 
 
