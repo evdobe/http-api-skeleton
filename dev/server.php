@@ -18,7 +18,8 @@ $http->on(
 $http->on(
     "request",
     function (Request $request, Response $response) {
-        $response->end("Hello, World!\n");
+        $response->setHeader('Content-Type', 'application/json');
+        $response->end('{"ack":"Hello"}');
     }
 );
 

@@ -1,0 +1,9 @@
+default:
+  autoload:
+    '': "%paths.base%/tests/behaviour/context"
+  suites:
+    default:
+      paths:
+      - "%paths.base%/tests/behaviour/features"
+      contexts:
+      - PingContext

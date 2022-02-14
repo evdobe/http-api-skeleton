@@ -4,12 +4,12 @@ PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 TYPE=$1
 shift 1
 
-if [ "$TYPE" == "integration" ] || [ -z "$TYPE" ]
+if [ "$TYPE" == "behaviour" ] || [ -z "$TYPE" ]
 then
-    $PARENT_PATH/env dev exec event-dispatcher vendor/bin/behat $@
+    $PARENT_PATH/env dev exec http-api vendor/bin/behat $@
 fi
 if [ "$TYPE" == "unit" ] || [ -z "$TYPE" ]
 then
-    $PARENT_PATH/env dev exec event-dispatcher vendor/bin/phpunit $@ tests/unit
+    $PARENT_PATH/env dev exec http-api vendor/bin/phpunit $@
 fi
 

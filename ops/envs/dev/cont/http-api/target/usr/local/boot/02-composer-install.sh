@@ -26,8 +26,8 @@ echo $AUTHORS
 if [ ! -f composer.json ]; then
     runuser -l hostuser -c "cp $PARENT_PATH/assets/composer.json composer.json"
     runuser -l hostuser -c "sed -i 's/\${PROJECT_NAME}/$PROJECT_ORG\/$PROJECT_NAME/g; s/\${PROJECT_DESCRIPTION}/$PROJECT_DESCRIPTION/g; s/\"\${PROJECT_AUTHORS}\"/$AUTHORS/g' composer.json"
-    runuser -l hostuser -c "composer require --dev phpunit/phpunit behat/behat"
-    runuser -l hostuser -c "composer require mezzio/mezzio-swoole"
-    # runuser -l hostuser -c "composer require php-di/php-di doctrine/annotations"
+    runuser -l hostuser -c "composer require --with-all-dependencies --dev curl/curl phpspec/prophecy beberlei/assert laminas/laminas-diactoros phpunit/phpunit behat/behat filp/whoops laminas/laminas-development-mode mezzio/mezzio-tooling roave/security-advisories:dev-latest"
+    runuser -l hostuser -c "composer require --with-all-dependencies laminas/laminas-diactoros laminas/laminas-component-installer laminas/laminas-config-aggregator laminas/laminas-stdlib fig/http-message-util mezzio/mezzio mezzio/mezzio-swoole mezzio/mezzio-fastroute mezzio/mezzio-helpers php-di/php-di doctrine/annotations elie29/zend-phpdi-config"
 fi
 runuser -l hostuser -c "composer install"
+runuser -l hostuser -c "composer development-enable"
