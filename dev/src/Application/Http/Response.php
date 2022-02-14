@@ -2,8 +2,8 @@
 
 namespace Application\Http;
 
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface; 
+use Laminas\Diactoros\Response\JsonResponse;
 
 class Response extends JsonResponse implements ResponseInterface
 {

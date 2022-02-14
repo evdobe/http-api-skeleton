@@ -37,5 +37,5 @@ use Application\Http\Handler\PingHandler;
  */
 
 return static function (Application $app): void {
-    $app->get('/api/ping', PingHandler::class, 'api.ping');
+    $app->get(getenv('HEALTCHECK_HTTP_PATH'), PingHandler::class, 'api.ping');
 };

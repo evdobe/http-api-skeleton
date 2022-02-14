@@ -15,6 +15,8 @@ class PingContext implements Context
 {
     protected int $port;
 
+    protected string $healthcheckHttpPath;
+
     protected Curl $curl;
 
     /**
@@ -37,12 +39,21 @@ class PingContext implements Context
     }
 
     /**
-     * @When I do http get
+     * @Given Healthcheck path is defined
      */
-    public function iDoHttpGet()
+    public function healthcheckPathIsDefined()
+    {
+        $this->healthcheckHttpPath = getenv('HEALTCHECK_HTTP_PATH');
+    }
+
+
+    /**
+     * @When I do http get on healthcheck path
+     */
+    public function iDoHttpGetOnHealthcheckPath()
     {
         $this->curl = new Curl();
-        $this->curl->get('http://http-api:'.$this->port);
+        $this->curl->get('http://http-api:'.$this->port.$this->healthcheckHttpPath);
     }
 
     /**

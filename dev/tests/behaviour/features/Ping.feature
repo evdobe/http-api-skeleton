@@ -5,5 +5,6 @@ Feature: Ping
 
 Scenario: Ping
     Given The service port is defined
-    When I do http get 
+    And Healthcheck path is defined
+    When I do http get on healthcheck path
     Then I should get an ack response
