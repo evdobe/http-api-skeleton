@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Infrastructure\Http\Adapter\MezzioSwoole;
+namespace Infrastructure\Http\Adapter\Mezzio;
 
 use Application\Http\Route as ApplicationRoute;
 use \Mezzio\Router\Route as MezzioRoute;

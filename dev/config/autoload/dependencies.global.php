@@ -13,8 +13,8 @@ return [
         // key is the alias name, the value is the service to which it points.
         'aliases' => [
             // Fully\Qualified\ClassOrInterfaceName::class => Fully\Qualified\ClassName::class,
-            \Application\Http\Application::class => \Infrastructure\Http\Adapter\MezzioSwoole\Application::class,
-            \Application\Http\Server::class => \Infrastructure\Http\Adapter\MezzioSwoole\Server::class,
+            \Application\Http\Application::class => \Infrastructure\Http\Adapter\Mezzio\Application::class,
+            \Application\Http\Server::class => \Infrastructure\Http\Adapter\Swoole\Server::class,
         ],
         // Use 'invokables' for constructor-less services, or services that do
         // not require arguments to the constructor. Map a service name to the
