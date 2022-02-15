@@ -7,3 +7,4 @@ default:
       - "%paths.base%/tests/behaviour/features"
       contexts:
       - PingContext
+      - ProjectEventsContext

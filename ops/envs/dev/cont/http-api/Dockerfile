@@ -5,11 +5,13 @@ ENV DEPS \
     zip \
     inotify-tools \
     libzip-dev \
-    libicu-dev
+    libicu-dev \
+    libpq-dev
 
 RUN apt-get clean && apt-get update \
         && apt-get install -y ${DEPS} \ 
-        && docker-php-ext-install zip intl
+        && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+        && docker-php-ext-install zip intl pgsql pdo_pgsql
 
 COPY target / 
 
