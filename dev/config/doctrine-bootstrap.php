@@ -1,13 +1,15 @@
 <?php declare(strict_types=1);
 
 // bootstrap.php
-require_once "vendor/autoload.php";
+require_once __DIR__."/../vendor/autoload.php";
 
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 
-function GetEntityManager(bool $isDevMode = false){
-    $paths = [getcwd()."/src/Domain"];
+$getDoctrineEntityManager = function(){
+    $isDevMode = (getenv('APPLICATION_ENVIRONMENT') == 'dev');
+    echo 'isDevMode:'; var_dump($isDevMode);
+    $paths = [__DIR__."/../src/Domain"];
 
     // the connection configuration
     $dbParams = [
@@ -19,6 +21,10 @@ function GetEntityManager(bool $isDevMode = false){
         'charset' => 'utf8',
     ];
 
-    $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
+    $config = Setup::createAttributeMetadataConfiguration($paths, $isDevMode);
+
+    $namingStrategy = new \Doctrine\ORM\Mapping\UnderscoreNamingStrategy(CASE_LOWER);
+    $config->setNamingStrategy($namingStrategy);
+    
     return EntityManager::create($dbParams, $config);
-}
+};

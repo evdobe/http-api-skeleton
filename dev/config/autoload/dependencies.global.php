@@ -13,6 +13,7 @@ return [
             // Fully\Qualified\ClassOrInterfaceName::class => Fully\Qualified\ClassName::class,
             \Application\Http\Application::class => \Infrastructure\Http\Adapter\Mezzio\Application::class,
             \Application\Http\Server::class => \Infrastructure\Http\Adapter\Swoole\Server::class,
+            \Application\Persistence\Manager::class => \Infrastructure\Persistence\Adapter\Doctrine\Manager::class
         ],
         // Use 'invokables' for constructor-less services, or services that do
         // not require arguments to the constructor. Map a service name to the
@@ -25,6 +26,10 @@ return [
         // Use 'factories' for services provided by callbacks/factory classes.
         'factories' => [
             // Fully\Qualified\ClassName::class => Fully\Qualified\FactoryName::class,
+            \Infrastructure\Persistence\Adapter\Doctrine\Manager::class => function(){
+                require __DIR__.'/../doctrine-bootstrap.php';
+                return new \Infrastructure\Persistence\Adapter\Doctrine\Manager($getDoctrineEntityManager);
+            },
         ],
     ],
 ];

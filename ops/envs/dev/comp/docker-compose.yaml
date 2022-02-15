@@ -2,6 +2,7 @@ services:
   http-api:
     build: ../cont/http-api
     environment:
+      APPLICATION_ENVIRONMENT: ${APPLICATION_ENVIRONMENT}
       HOST_GID: ${HOST_UID}
       HOST_UID: ${HOST_UID}
       PROJECT_NAME: ${PROJECT_NAME}
@@ -30,6 +31,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    restart: on-failure
   db:
     build: ../cont/db
     environment:

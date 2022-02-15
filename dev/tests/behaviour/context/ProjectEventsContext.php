@@ -40,7 +40,7 @@ class ProjectEventsContext implements Context
      */
     public function iHaveAccessToTheEventStore()
     {
-        $stmt = $this->con->query('SELECT to_regclass("public.event");');
+        $stmt = $this->con->query('SELECT to_regclass(\'event\');');
         $table = $stmt->fetch();
 
         Assert::that($table)->notEmpty();
@@ -54,7 +54,7 @@ class ProjectEventsContext implements Context
         $stmt = $this->con->prepare(self::RECEIVED_EVENT_INSERT_SQL);
         $stmt->execute(
             [
-                ':name' => 'MyaggregateCreated',
+                ':name' => 'HttpApiSkeleton:MyAggregateCreated',
                 ':channel' => 'MyEventChannel',
                 ':correlation_id' => 15,
                 ':aggregate_id' => 2,
@@ -72,11 +72,11 @@ class ProjectEventsContext implements Context
      */
     public function theCreatedEventShouldBeProjectedOnMyaggregateDbTable()
     {
-        $stmt = $this->con->prepare('SELECT * FROM "myaggregate" where id=:id;');
+        $stmt = $this->con->prepare('SELECT * FROM "my_aggregate" where id=:id;');
         $stmt->execute(['id' => $this->lastEventId]); 
         $aggregate = $stmt->fetch();
 
-        Assert::that($$aggregate)->notEmpty();
+        Assert::that($aggregate)->notEmpty();
     }
 
 

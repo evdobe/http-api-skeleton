@@ -47,13 +47,14 @@
         "laminas/laminas-stdlib": "^3.7",
         "fig/http-message-util": "^1.1",
         "mezzio/mezzio": "^3.10",
-        "mezzio/mezzio-swoole": "^4.1",
+        "mezzio/mezzio-swoole": "^4.2",
         "mezzio/mezzio-fastroute": "^3.5",
         "mezzio/mezzio-helpers": "^5.8",
         "php-di/php-di": "^6.3",
         "doctrine/annotations": "^1.13",
         "elie29/zend-phpdi-config": "^8.1",
         "doctrine/orm": "^2.11",
-        "doctrine/migrations": "^3.4"
+        "doctrine/migrations": "^3.4",
+        "symfony/cache": "^6.0"
     }
 }

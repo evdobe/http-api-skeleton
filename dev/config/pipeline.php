@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Laminas\Stratigility\Middleware\ErrorHandler;
 use Application\Http\Application;
+use Application\Http\Middleware\ClosingPersistenceManagerMiddleware;
 use Mezzio\Handler\NotFoundHandler;
 use Mezzio\Helper\ServerUrlMiddleware;
 use Mezzio\Helper\UrlHelperMiddleware;
@@ -41,6 +42,7 @@ return function (Application $app): void {
     // - $app->pipe('/api', $apiMiddleware);
     // - $app->pipe('/docs', $apiDocMiddleware);
     // - $app->pipe('/files', $filesMiddleware);
+    $app->pipe(ClosingPersistenceManagerMiddleware::class);
 
     // Register the routing middleware in the middleware pipeline.
     // This middleware registers the Mezzio\Router\RouteResult request attribute.
