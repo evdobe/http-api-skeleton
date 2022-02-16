@@ -43,7 +43,7 @@ class PingContext implements Context
      */
     public function healthcheckPathIsDefined()
     {
-        $this->healthcheckHttpPath = getenv('HEALTCHECK_HTTP_PATH');
+        $this->healthcheckHttpPath = getenv('HEALTHCHECK_HTTP_PATH');
     }
 
 

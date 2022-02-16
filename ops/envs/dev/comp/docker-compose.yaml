@@ -10,7 +10,8 @@ services:
       PROJECT_DESCRIPTION: ${PROJECT_DESCRIPTION}
       PROJECT_AUTHORS: ${PROJECT_AUTHORS}
       HTTP_PORT: ${HTTP_PORT}
-      HEALTCHECK_HTTP_PATH: ${HEALTCHECK_HTTP_PATH}
+      HEALTHCHECK_HTTP_PATH: ${HEALTHCHECK_HTTP_PATH}
+      BASE_HTTP_PATH: ${BASE_HTTP_PATH}
       TZ: ${TIME_ZONE}
       AUTORELOAD_PROGRAMS: "swoole"
       AUTORELOAD_ANY_FILES: 0
@@ -27,7 +28,7 @@ services:
     depends_on:
       - db
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${HTTP_PORT}${HEALTCHECK_HTTP_PATH}"]
+      test: ["CMD", "curl", "-f", "http://localhost:${HTTP_PORT}${HEALTHCHECK_HTTP_PATH}"]
       interval: 30s
       timeout: 10s
       retries: 3

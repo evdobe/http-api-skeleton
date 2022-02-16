@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Application\Http\Application;
+use Application\Http\Handler\MyAggregateByIdHandler;
 use Application\Http\Handler\MyAggregateHandler;
 use Application\Http\Handler\PingHandler;
 
@@ -38,6 +39,10 @@ use Application\Http\Handler\PingHandler;
  */
 
 return static function (Application $app): void {
-    $app->get(getenv('HEALTCHECK_HTTP_PATH'), PingHandler::class, 'api.ping');
-    $app->get('/api/my-aggregate', MyAggregateHandler::class, 'api.my-aggregate');
+
+    $basePath = getenv('BASE_HTTP_PATH');
+
+    $app->get(getenv('HEALTHCHECK_HTTP_PATH'), PingHandler::class, 'ping');
+    $app->get($basePath.'/my-aggregate', MyAggregateHandler::class, 'my-aggregate-get-all');
+    $app->get($basePath.'/my-aggregate/{aggregateId}', MyAggregateByIdHandler::class, 'my-aggregate-get-by-id');
 };
