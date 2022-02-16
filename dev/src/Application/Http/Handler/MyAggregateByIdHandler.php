@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Application\Persistence\Manager;
 use Application\Persistence\Repository;
-use Domain\MyAggregate\MyAggregate;
+use Domain\MyAggregate;
 use Laminas\Diactoros\Response\EmptyResponse;
 
 class MyAggregateByIdHandler  implements RequestHandlerInterface

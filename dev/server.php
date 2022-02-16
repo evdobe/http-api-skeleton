@@ -3,6 +3,7 @@
 
 use Application\Event\Projector;
 use Application\Event\Store;
+use Application\Event\StoreListener;
 use Application\Http\Application;
 use Application\Http\Server;
 use Application\Execution\Process;
@@ -37,9 +38,13 @@ require 'vendor/autoload.php';
 
     $process = $container->make(Process::class, ["callback" => function($process) use ($container){
         echo "Starting projector process...\n";
+        $manager = $container->make(Manager::class);
         $projector = $container->make(Projector::class, [
-            'store' => $container->make(Store::class),
-            'manager' => $container->make(Manager::class)
+            'store' => $container->make(Store::class, [
+                'manager' => $manager,
+                'listener' => $container->make(StoreListener::class),
+            ]),
+            'manager' => $manager
         ]);
         $projector->start();
         sleep(1);
@@ -50,9 +55,13 @@ require 'vendor/autoload.php';
     $timer = $container->make(Timer::class);
 
     $server->on("start", function(Server $server) use ($timer, $container){
+        $manager = $container->make(Manager::class);
         $projector = $container->make(Projector::class, [
-            'store' => $container->make(Store::class),
-            'manager' => $container->make(Manager::class)
+            'store' => $container->make(Store::class, [
+                'manager' => $manager,
+                'listener' => null
+            ]),
+            'manager' => $manager
         ]);
         $projector->projectUnprojected();
         $timer->tick(2*60*1000, function() use ($projector){

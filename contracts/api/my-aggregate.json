@@ -1,6 +1,8 @@
 {
     "id": 2,
     "version": 4,
-    "key1": "value1",
-    "key2": "value2"
+    "data": {
+        "key1": "value1",
+        "key2": "value2"
+    }
 }

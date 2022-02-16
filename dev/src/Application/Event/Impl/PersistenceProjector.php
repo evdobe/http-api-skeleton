@@ -17,6 +17,7 @@ class PersistenceProjector implements Projector
 
     public function project(int $aggregateId)
     {
+        echo "Projecting aggregate with id = ".$aggregateId."\n";
         $eventStream = $this->store->getEventStream(aggregateId:$aggregateId);
         $aggregate = new MyAggregate($eventStream);
         $this->manager->merge($aggregate);
@@ -33,6 +34,7 @@ class PersistenceProjector implements Projector
 
     public function projectUnprojected(): void
     {
+        echo "Quering for unprojected events ...\n";
         $unprojectedEvents = $this->store->getUnprojectedEvents();
         $aggregateIds = array_unique(array_map(function(Event $event){
             return $event->getAggregateId();

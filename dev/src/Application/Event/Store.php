@@ -6,7 +6,7 @@ use Application\Persistence\Manager;
 
 interface Store
 {
-    public function __construct(StoreListener $listener, Manager $manager);
+    public function __construct(Manager $manager, ?StoreListener $listener = null);
 
     public function listen(Projector $projector):void;
 

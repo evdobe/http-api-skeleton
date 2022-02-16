@@ -13,13 +13,16 @@ class PersistenceStore implements Store
 {
     protected Repository $repository;
 
-    public function __construct(protected StoreListener $listener, Manager $manager)
+    public function __construct(Manager $manager, protected ?StoreListener $listener = null)
     {
         $this->repository = $manager->getRepository(Event::class);
     }
 
     public function listen(Projector $projector): void
     {
+        if (empty($this->listener)){
+            throw new \Exception('No listener provided!');
+        }
         $this->listener->listen($projector);
     }
 

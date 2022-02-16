@@ -6,10 +6,11 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Id;
+use JsonSerializable;
 
 #[Entity()]
 #[Table(name:"my_aggregate")]
-class MyAggregate
+class MyAggregate implements JsonSerializable
 {
 
     #[Column(type:"integer")]
@@ -28,14 +29,25 @@ class MyAggregate
         });
     }
 
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'id' => $this->id,
+            'version' => $this->version,
+            'data' => $this->data,
+        ];
+    }
+
     public function apply(Event $event){
         match($event::class){
-            CreatedEvent::class => function() use ($event){
-                $this->id = $event->getAggregateId();
-                $this->version = $event->getAggregateVersion();
-                $this->data = $event->getData();
-            }
+            CreatedEvent::class => $this->applyCreated($event)
         };
+    }
+
+    protected function applyCreated(CreatedEvent $event){
+        $this->id = $event->getAggregateId();
+        $this->version = $event->getAggregateVersion();
+        $this->data = $event->getData();
     }
 
 }

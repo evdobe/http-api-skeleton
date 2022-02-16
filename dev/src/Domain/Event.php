@@ -29,9 +29,6 @@ abstract class Event
         #[Column(type:"string")]
         private string $channel,
 
-        #[Column(type:"integer", nullable:true)]
-        private ?int $correlationId = null,
-
         #[Column(type:"integer")]
         private int $aggregateId,
 
@@ -45,16 +42,19 @@ abstract class Event
         private DateTimeImmutable $timestamp,
 
         #[Column(type:"boolean", options:["default" => false])]
+        private bool $projected = false,
+
+        #[Column(type:"boolean", options:["default" => false])]
         private bool $dispatched = false,
 
         #[Column(type:"datetime_immutable", nullable:true)]
         private ?DateTimeImmutable $dispatchedAt = null,
 
+        #[Column(type:"integer", nullable:true)]
+        private ?int $correlationId = null,
+
         #[Column(type:"datetime_immutable", nullable:true)]
         private ?DateTimeImmutable $receivedAt = null,
-        
-        #[Column(type:"boolean", options:["default" => false])]
-        private bool $projected = false,
 
     ){
         
