@@ -21,6 +21,12 @@ class ProjectEventsContext implements Context
 
     protected int $lastEventId;
 
+    protected Curl $curl;
+
+    protected int $port;
+
+    protected string $basePath;
+
     /**
      * Initializes context.
      *
@@ -32,7 +38,10 @@ class ProjectEventsContext implements Context
     {
         $this->con = new PDO("pgsql:host=".getenv('DB_HOST').";dbname=".getenv('DB_NAME'), getenv('DB_USER'), getenv('DB_PASSWORD'));
         $stmt = $this->con->prepare('TRUNCATE TABLE "event"');
+        $stmt = $this->con->prepare('TRUNCATE TABLE "my_aggregate"');
         $stmt->execute(); 
+        $this->port = getenv('HTTP_PORT');
+        $this->basePath = getenv('BASE_HTTP_PATH');
     }
 
     /**
@@ -47,37 +56,61 @@ class ProjectEventsContext implements Context
     }
 
     /**
-     * @When A new myaggregate created event is persisted in event store
+     * @Given A new myaggregate created event has been added to event store
      */
-    public function aNewMyaggregateCreatedEventIsPersistedInEventStore()
+    public function aNewMyaggregateCreatedEventHasBeenAddedToEventStore()
     {
+        $eventData = json_decode(file_get_contents('/contracts/db/event/MyAggregate/Created.json'), true);
         $stmt = $this->con->prepare(self::RECEIVED_EVENT_INSERT_SQL);
-        $stmt->execute(
-            [
-                ':name' => 'HttpApiSkeleton:MyAggregateCreated',
-                ':channel' => 'MyEventChannel',
-                ':correlation_id' => 15,
-                ':aggregate_id' => 2,
-                ':aggregate_version' => 1,
-                ':data' => '{"akey":"avalue"}',
-                ':timestamp' => '2022-01-28 12:23:56',
-                ':received_at' => '2022-01-28 12:25:56',
-            ]
-        );
+        $stmt->execute($eventData);
         $this->lastEventId = $this->con->lastInsertId();
     }
 
     /**
-     * @Then the  created event should be projected on myaggregate db table
+     * @When I query the api for all myaggregates
      */
-    public function theCreatedEventShouldBeProjectedOnMyaggregateDbTable()
+    public function iQueryTheApiForAllMyaggregates()
     {
-        $stmt = $this->con->prepare('SELECT * FROM "my_aggregate" where id=:id;');
-        $stmt->execute(['id' => $this->lastEventId]); 
-        $aggregate = $stmt->fetch();
-
-        Assert::that($aggregate)->notEmpty();
+        $this->curl = new Curl();
+        $this->curl->get('http://http-api:'.$this->port.$this->basePath.'/my-aggregate');
     }
 
+    /**
+     * @Then the new myaggregate should be contained in result
+     */
+    public function theNewMyaggregateShouldBeContainedInResult()
+    {
+        $aggregateData = json_decode(file_get_contents('/contracts/api/my-aggregate.json'), true);
+        Assert::that($this->curl->error)->noContent();
+        Assert::that($this->curl->getHttpStatus())->eq(200);
+        Assert::that($this->curl->response)->notEmpty();
+        Assert::that('Content-Type: application/json')->inArray($this->curl->response_headers);
+        Assert::that($this->curl->response)->isJsonString();
+        Assert::that($aggregateData)->inArray(json_decode($this->curl->response, true));
+    }
+
+    /**
+     * @When I query the api for myaggregate by id
+     */
+    public function iQueryTheApiForMyaggregateById()
+    {
+        $eventData = json_decode(file_get_contents('/contracts/db/event/MyAggregate/Created.json'), true);
+        $this->curl = new Curl();
+        $this->curl->get('http://http-api:'.$this->port.$this->basePath.'/my-aggregate/'.$eventData[':aggregate_id']);
+    }
+
+    /**
+     * @Then the new myaggregate should returned
+     */
+    public function theNewMyaggregateShouldReturned()
+    {
+        $aggregateData = json_decode(file_get_contents('/contracts/api/my-aggregate.json'), true);
+        Assert::that($this->curl->error)->noContent();
+        Assert::that($this->curl->getHttpStatus())->eq(200);
+        Assert::that($this->curl->response)->notEmpty();
+        Assert::that('Content-Type: application/json')->inArray($this->curl->response_headers);
+        Assert::that($this->curl->response)->isJsonString();
+        Assert::that(json_decode($this->curl->response, true))->eq($aggregateData);
+    }
 
 }

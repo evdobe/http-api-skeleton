@@ -25,6 +25,7 @@ services:
     - ${HTTP_PORT}:${HTTP_PORT}
     volumes:
     - ../../../../dev:/var/www
+    - ../../../../contracts:/contracts
     depends_on:
       - db
     healthcheck:
