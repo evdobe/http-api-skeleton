@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Domain\Event;
+namespace Domain;
 
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
@@ -10,8 +10,6 @@ use Doctrine\ORM\Mapping\InheritanceType;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\GeneratedValue;
-use Domain\MyAggregate\CreatedEvent;
-use Doctrine\ORM\Mapping\SequenceGenerator;
 
 #[Entity()]
 #[InheritanceType("SINGLE_TABLE")]
@@ -41,7 +39,7 @@ abstract class Event
         private int $aggregateVersion,
 
         #[Column(type:"json")]
-        private int $data,
+        private array $data,
 
         #[Column(type:"datetime")]
         private DateTimeImmutable $timestamp,
@@ -60,5 +58,25 @@ abstract class Event
 
     ){
         
+    }
+
+    public function getName():string{
+        return $this->name;
+    }
+
+    public function getAggregateId():int{
+        return $this->aggregateId;
+    }
+
+    public function getAggregateVersion():int{
+        return $this->aggregateVersion;
+    }
+
+    public function getData():array{
+        return $this->data;
+    }
+
+    public function setProjected():void{
+        $this->projected = true;
     }
 }

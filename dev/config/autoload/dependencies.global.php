@@ -13,7 +13,10 @@ return [
             // Fully\Qualified\ClassOrInterfaceName::class => Fully\Qualified\ClassName::class,
             \Application\Http\Application::class => \Infrastructure\Http\Adapter\Mezzio\Application::class,
             \Application\Http\Server::class => \Infrastructure\Http\Adapter\Swoole\Server::class,
-            \Application\Persistence\Manager::class => \Infrastructure\Persistence\Adapter\Doctrine\Manager::class
+            \Application\Persistence\Manager::class => \Infrastructure\Persistence\Adapter\Doctrine\Manager::class,
+            \Application\Event\Store::class => \Application\Event\Impl\PersistenceStore::class,
+            \Application\Event\StoreListener::class => Infrastructure\Event\Adapter\Postgres\StoreListener::class,
+            \Application\Event\Projector::class => \Application\Event\Impl\PersistenceProjector::class,
         ],
         // Use 'invokables' for constructor-less services, or services that do
         // not require arguments to the constructor. Map a service name to the

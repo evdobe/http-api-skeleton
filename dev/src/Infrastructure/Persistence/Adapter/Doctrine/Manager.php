@@ -37,6 +37,13 @@ class Manager implements ApplicationManager
         return new Repository($this->delegate->getRepository($className));
     }
 
+    public function merge(object $aggregate):object{
+        return $this->delegate->merge($aggregate);
+    }
+
+    public function flush(object $aggregate = null):void {
+        $this->delegate->flush($aggregate);
+    }
     
 
 }

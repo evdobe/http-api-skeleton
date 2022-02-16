@@ -10,4 +10,8 @@ interface Manager
     
     public function getRepository(string $className):Repository;
 
+    public function merge(object $aggregate):object;
+
+    public function flush(object $aggregate = null):void;
+
 }

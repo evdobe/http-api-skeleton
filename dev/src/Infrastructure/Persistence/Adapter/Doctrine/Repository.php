@@ -23,4 +23,9 @@ class Repository implements ApplicationRepository
         return $this->delegate->findAll();
     }
 
+    public function findBy(array $criteria, ?array $orderBy = null): array
+    {
+        return $this->delegate->findBy(criteria: $criteria, orderBy: $orderBy);
+    }
+
 }

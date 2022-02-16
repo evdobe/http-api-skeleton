@@ -64,6 +64,7 @@ class ProjectEventsContext implements Context
         $stmt = $this->con->prepare(self::RECEIVED_EVENT_INSERT_SQL);
         $stmt->execute($eventData);
         $this->lastEventId = $this->con->lastInsertId();
+        var_dump($this->lastEventId);
     }
 
     /**

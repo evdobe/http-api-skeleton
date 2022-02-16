@@ -1,9 +1,8 @@
 <?php
 
-namespace Domain\MyAggregate;
+namespace Domain;
 
 use Doctrine\ORM\Mapping\Entity;
-use Domain\Event\Event;
 
 #[Entity()]
 class CreatedEvent extends Event
