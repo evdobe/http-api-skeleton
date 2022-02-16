@@ -64,7 +64,7 @@ require 'vendor/autoload.php';
             'manager' => $manager
         ]);
         $projector->projectUnprojected();
-        $timer->tick(2*60*1000, function() use ($projector){
+        $timer->tick(10*60*1000, function() use ($projector){
             echo "Priodically checking for unprojected events...\n";
             $projector->projectUnprojected();
             sleep(1);
