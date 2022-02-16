@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 #[Entity()]
 #[InheritanceType("SINGLE_TABLE")]
 #[DiscriminatorColumn(name:"name", type:"string")]
-#[DiscriminatorMap(['HttpApiSkeleton:MyAggregateCreated' => CreatedEvent::class])]
+#[DiscriminatorMap(['Collaborator:MyAggregateCreated' => CreatedEvent::class])]
 abstract class Event
 {
     public function __construct(
@@ -41,16 +41,16 @@ abstract class Event
         #[Column(type:"json")]
         private array $data,
 
-        #[Column(type:"datetime")]
+        #[Column(type:"datetime_immutable")]
         private DateTimeImmutable $timestamp,
 
         #[Column(type:"boolean", options:["default" => false])]
         private bool $dispatched = false,
 
-        #[Column(type:"datetime", nullable:true)]
+        #[Column(type:"datetime_immutable", nullable:true)]
         private ?DateTimeImmutable $dispatchedAt = null,
 
-        #[Column(type:"datetime", nullable:true)]
+        #[Column(type:"datetime_immutable", nullable:true)]
         private ?DateTimeImmutable $receivedAt = null,
         
         #[Column(type:"boolean", options:["default" => false])]
