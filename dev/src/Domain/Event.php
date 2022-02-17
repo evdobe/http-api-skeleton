@@ -22,39 +22,39 @@ abstract class Event
         #[Column(type:"integer", insertable: true, updatable: false)]
         #[Id]
         #[GeneratedValue(strategy:'IDENTITY')]
-        private int $id,
+        private readonly int $id,
 
-        private string $name,
+        private readonly string $name,
 
         #[Column(type:"string", insertable: true, updatable: false)]
-        private string $channel,
+        private readonly string $channel,
 
         #[Column(type:"integer", insertable: true, updatable: false)]
-        private int $aggregateId,
+        private readonly int $aggregateId,
 
         #[Column(type:"integer", insertable: true, updatable: false)]
-        private int $aggregateVersion,
+        private readonly int $aggregateVersion,
 
         #[Column(type:"json", insertable: true, updatable: false)]
-        private array $data,
+        private readonly array $data,
 
         #[Column(type:"datetime_immutable", insertable: true, updatable: false)]
-        private DateTimeImmutable $timestamp,
+        private readonly DateTimeImmutable $timestamp,
 
         #[Column(type:"boolean", options:["default" => false], insertable: true, updatable: true)]
         private bool $projected = false,
 
         #[Column(type:"boolean", options:["default" => false], insertable: true, updatable: false)]
-        private bool $dispatched = false,
+        private readonly bool $dispatched = false,
 
         #[Column(type:"datetime_immutable", nullable:true, insertable: true, updatable: false)]
-        private ?DateTimeImmutable $dispatchedAt = null,
+        private readonly ?DateTimeImmutable $dispatchedAt = null,
 
         #[Column(type:"integer", nullable:true, insertable: true, updatable: false)]
-        private ?int $correlationId = null,
+        private readonly ?int $correlationId = null,
 
         #[Column(type:"datetime_immutable", nullable:true, insertable: true, updatable: false)]
-        private ?DateTimeImmutable $receivedAt = null,
+        private readonly ?DateTimeImmutable $receivedAt = null,
 
     ){
         
