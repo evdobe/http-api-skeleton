@@ -11,7 +11,7 @@ interface Projector
 {
     public function __construct(Store $store, Manager $manager);
 
-    public function project(int $aggregateId);
+    public function project(int $aggregateId, ?array $triggerEvent = null);
     
     public function start():void;
 

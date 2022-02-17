@@ -1,0 +1,13 @@
+{
+    "id": 2,
+    "version": 4,
+    "data": {
+        "key1": "value1",
+        "key2": "value2"
+    },
+    "status": {
+        "code": "inactive",
+        "by": null,
+        "at": "2022-02-16 15:04:01"
+    }
+}

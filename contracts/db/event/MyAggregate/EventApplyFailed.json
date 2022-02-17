@@ -1,0 +1,5 @@
+{
+    ":name": "HttpApi:EventApplyFailed",
+    ":aggregate_id": 2,
+    ":aggregate_version": 6
+}

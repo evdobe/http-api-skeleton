@@ -9,7 +9,6 @@ final class MyAggregateTest extends TestCase
     public function testShouldApplyCreatedEvent(){
         $event = new CreatedEvent(
             id: 12,
-            name: 'Created',
             channel: 'achannel',
             correlationId: null,
             aggregateId: 34,

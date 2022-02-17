@@ -91,7 +91,7 @@ class ProjectEventsContext implements Context
      */
     public function theNewMyaggregateShouldBeContainedInResult()
     {
-        $aggregateData = json_decode(file_get_contents('/contracts/api/my-aggregate.json'), true);
+        $aggregateData = json_decode(file_get_contents('/contracts/api/my-aggregate-new.json'), true);
         Assert::that($this->curl->error)->noContent();
         Assert::that($this->curl->getHttpStatus())->eq(200);
         Assert::that($this->curl->response)->notEmpty();
@@ -115,7 +115,7 @@ class ProjectEventsContext implements Context
      */
     public function theNewMyaggregateShouldReturned()
     {
-        $aggregateData = json_decode(file_get_contents('/contracts/api/my-aggregate.json'), true);
+        $aggregateData = json_decode(file_get_contents('/contracts/api/my-aggregate-new.json'), true);
         Assert::that($this->curl->error)->noContent();
         Assert::that($this->curl->getHttpStatus())->eq(200);
         Assert::that($this->curl->response)->notEmpty();
@@ -123,5 +123,100 @@ class ProjectEventsContext implements Context
         Assert::that($this->curl->response)->isJsonString();
         Assert::that(json_decode($this->curl->response, true))->eq($aggregateData);
     }
+
+    /**
+     * @Given An aggregate activated event for this aggregate has been added to event store
+     */
+    public function anAggregateActivatedEventForThisAggregateHasBeenAddedToEventStore()
+    {
+        $eventData = json_decode(file_get_contents('/contracts/db/event/MyAggregate/Activated.json'), true);
+        $stmt = $this->con->prepare(self::RECEIVED_EVENT_INSERT_SQL);
+        $stmt->execute($eventData);
+        $this->lastEventId = $this->con->lastInsertId();
+        sleep(1);
+    }
+
+    /**
+     * @Then the activated myaggregate should returned
+     */
+    public function theActivatedMyaggregateShouldReturned()
+    {
+        $aggregateData = json_decode(file_get_contents('/contracts/api/my-aggregate-active.json'), true);
+        Assert::that($this->curl->error)->noContent();
+        Assert::that($this->curl->getHttpStatus())->eq(200);
+        Assert::that($this->curl->response)->notEmpty();
+        Assert::that('Content-Type: application/json')->inArray($this->curl->response_headers);
+        Assert::that($this->curl->response)->isJsonString();
+        Assert::that(json_decode($this->curl->response, true))->eq($aggregateData);
+    }
+
+    /**
+     * @Given An out of order aggregate activated event for this aggregate has been added to event store
+     */
+    public function anOutOfOrderAggregateActivatedEventForThisAggregateHasBeenAddedToEventStore()
+    {
+        $eventData = json_decode(file_get_contents('/contracts/db/event/MyAggregate/OutOfOrderActivated.json'), true);
+        $stmt = $this->con->prepare(self::RECEIVED_EVENT_INSERT_SQL);
+        $stmt->execute($eventData);
+        $this->lastEventId = $this->con->lastInsertId();
+        sleep(1);
+    }
+
+    /**
+     * @Then the not activated myaggregate should returned
+     */
+    public function theNotActivatedMyaggregateShouldReturned()
+    {
+        $this->theNewMyaggregateShouldReturned();
+    }
+
+    /**
+     * @Then a new EventApplyFailedEvent should be added to event store
+     */
+    public function aNewEventapplyfailedeventShouldBeAddedToEventStore()
+    {
+        $eventData = json_decode(file_get_contents('/contracts/db/event/MyAggregate/EventApplyFailed.json'), true);
+        $stmt = $this->con->prepare("SELECT * FROM event where name=:name and aggregate_id = :aggregate_id and aggregate_version = :aggregate_version");
+        $stmt->execute($eventData);
+        $event = $stmt->fetch();
+
+        Assert::that($event)->notEmpty();
+        
+        Assert::that($event['correlation_id'])->eq($this->lastEventId);
+        Assert::that($event['timestamp'])->notEmpty();
+        Assert::that($event['data'])->notEmpty();
+        Assert::that(json_decode($event['data'], true)['exception'])->notEmpty();
+        Assert::that(json_decode($event['data'], true)['exception']['class'])->notEmpty();
+        Assert::that(json_decode($event['data'], true)['exception']['code'])->notEmpty();
+        Assert::that(json_decode($event['data'], true)['exception']['trace'])->notEmpty();
+    }
+
+    /**
+     * @Given A Restoring created event has been added to event store
+     */
+    public function aRestoringCreatedEventHasBeenAddedToEventStore()
+    {
+        $eventData = json_decode(file_get_contents('/contracts/db/event/MyAggregate/OrderRestoreCreated.json'), true);
+        $stmt = $this->con->prepare(self::RECEIVED_EVENT_INSERT_SQL);
+        $stmt->execute($eventData);
+        $this->lastEventId = $this->con->lastInsertId();
+        sleep(1);
+    }
+
+    /**
+     * @Then the restored myaggregate should returned
+     */
+    public function theRestoredMyaggregateShouldReturned()
+    {
+        $aggregateData = json_decode(file_get_contents('/contracts/api/my-aggregate-active-restored.json'), true);
+        Assert::that($this->curl->error)->noContent();
+        Assert::that($this->curl->getHttpStatus())->eq(200);
+        Assert::that($this->curl->response)->notEmpty();
+        Assert::that('Content-Type: application/json')->inArray($this->curl->response_headers);
+        Assert::that($this->curl->response)->isJsonString();
+        Assert::that(json_decode($this->curl->response, true))->eq($aggregateData);
+    }
+
+
 
 }

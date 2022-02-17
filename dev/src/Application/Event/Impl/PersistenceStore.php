@@ -13,7 +13,7 @@ class PersistenceStore implements Store
 {
     protected Repository $repository;
 
-    public function __construct(Manager $manager, protected ?StoreListener $listener = null)
+    public function __construct(protected Manager $manager, protected ?StoreListener $listener = null)
     {
         $this->repository = $manager->getRepository(Event::class);
     }
@@ -32,7 +32,12 @@ class PersistenceStore implements Store
 
     public function getEventStream(int $aggregateId): array
     {
-        return $this->repository->findBy(criteria: ['aggregateId' => $aggregateId], orderBy: ['aggregateVersion' => 'ASC']);
+        return $this->repository->findBy(criteria: ['aggregateId' => $aggregateId], orderBy: ['aggregateVersion' => 'ASC', 'id' => 'ASC']);
+    }
+
+    public function add(Event $event):void{
+        $this->manager->persist($event);
+        $this->manager->flush();
     }
 
 }

@@ -20,4 +20,6 @@ interface Manager
 
     public function rollBack():void;
 
+    public function persist(object $object):void;
+
 }

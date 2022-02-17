@@ -1,0 +1,10 @@
+{
+    ":name": "Collaborator:MyAggregateCreated",
+    ":channel": "Collaborator.event",
+    ":correlation_id": 60,
+    ":aggregate_id": 2,
+    ":aggregate_version": 5,
+    ":data": "{\"key1\": \"value13\", \"key2\": \"value14\"}",
+    ":timestamp": "2022-02-17 18:05:01",
+    ":received_at": "2022-02-16 15:06:56"
+}

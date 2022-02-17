@@ -53,7 +53,7 @@ class StoreListener implements EventStoreListener
         }
         $eventData = json_decode($notification['payload'], true);
         echo "Received notification for event with id = ".$eventData['id']."\n";
-        $projector->project(aggregateId:$eventData['aggregate_id']);
+        $projector->project(aggregateId:$eventData['aggregate_id'], triggerEvent:$eventData);
     }
 
     protected function setUpListener(){

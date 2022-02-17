@@ -5,7 +5,7 @@ namespace Domain;
 use Doctrine\ORM\Mapping\Entity;
 
 #[Entity()]
-class CreatedEvent extends Event
+class EventApplyFailedEvent extends Event
 {
 
 }

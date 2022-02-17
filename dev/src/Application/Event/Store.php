@@ -3,6 +3,7 @@
 namespace Application\Event;
 
 use Application\Persistence\Manager;
+use Domain\Event;
 
 interface Store
 {
@@ -13,5 +14,7 @@ interface Store
     public function getEventStream(int $aggregateId):array;
 
     public function getUnprojectedEvents():array;
+
+    public function add(Event $event):void;
 
 }

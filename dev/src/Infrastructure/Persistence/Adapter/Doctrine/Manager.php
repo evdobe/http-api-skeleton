@@ -62,4 +62,8 @@ class Manager implements ApplicationManager
         $this->delegate->rollBack();
     }
 
+    public function persist(object $object):void{
+        $this->delegate->persist($object);
+    }
+
 }

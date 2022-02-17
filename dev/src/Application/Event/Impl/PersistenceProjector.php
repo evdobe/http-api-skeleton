@@ -6,6 +6,8 @@ use Application\Event\Projector;
 use Application\Event\Store;
 use Application\Persistence\Manager;
 use Domain\Event;
+use Domain\EventApplyFailedEvent;
+use Domain\Exception\EventApplyException;
 use Domain\MyAggregate;
 
 class PersistenceProjector implements Projector
@@ -15,17 +17,39 @@ class PersistenceProjector implements Projector
         $this->manager->open();
     }
 
-    public function project(int $aggregateId)
+    public function project(int $aggregateId, ?array $triggerEvent = null)
     {
+        if ($triggerEvent && $triggerEvent['projected']){
+            echo "The new event with id = ".$aggregateId." is already projected. Nothing to do!\n";
+            return;
+        }
         echo "Projecting aggregate with id = ".$aggregateId."\n";
         $eventStream = $this->store->getEventStream(aggregateId:$aggregateId);
-        $aggregate = new MyAggregate($eventStream);
         $this->manager->beginTransaction();
         try {
+            $aggregate = new MyAggregate($eventStream);
             $this->manager->replace(id: $aggregateId, aggregate: $aggregate);
             $this->setProjected($eventStream);
             $this->manager->flush();
             $this->manager->commit();
+        }
+        catch (EventApplyException $e){
+            $this->manager->rollBack();
+            $failedEvent = new EventApplyFailedEvent(
+                aggregateId: $aggregateId,
+                aggregateVersion: $e->getEvent()->getAggregateVersion(),
+                correlationId: $e->getEvent()->getId(),
+                data: [
+                    'exception' => [
+                        'class' => $e::class,
+                        'code' => $e->getCode(),
+                        'trace' => $e->getTrace()
+                    ]
+                ],
+                timestamp: new \DateTimeImmutable(),
+                projected: true
+            );
+            $this->store->add($failedEvent);
         }
         catch (\Exception $e){
             $this->manager->rollBack();
