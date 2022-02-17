@@ -10,8 +10,14 @@ interface Manager
     
     public function getRepository(string $className):Repository;
 
-    public function merge(object $aggregate):object;
+    public function replace(mixed $id, object $aggregate):void;
 
     public function flush(object $aggregate = null):void;
+
+    public function beginTransaction():void;
+
+    public function commit():void;
+
+    public function rollBack():void;
 
 }

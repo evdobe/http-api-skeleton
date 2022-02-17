@@ -20,9 +20,17 @@ class PersistenceProjector implements Projector
         echo "Projecting aggregate with id = ".$aggregateId."\n";
         $eventStream = $this->store->getEventStream(aggregateId:$aggregateId);
         $aggregate = new MyAggregate($eventStream);
-        $this->manager->merge($aggregate);
-        $this->setProjected($eventStream);
-        $this->manager->flush();
+        $this->manager->beginTransaction();
+        try {
+            $this->manager->replace(id: $aggregateId, aggregate: $aggregate);
+            $this->setProjected($eventStream);
+            $this->manager->flush();
+            $this->manager->commit();
+        }
+        catch (\Exception $e){
+            $this->manager->rollBack();
+            throw $e;
+        }
     }
 
     public function start(): void

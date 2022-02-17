@@ -46,13 +46,13 @@ class ProjectEventsContext implements Context
     /**
       * @BeforeScenario @database
       */
-    //   public function cleanDB(BeforeScenarioScope $scope)
-    //   {
-    //     $stmt = $this->con->prepare('DELETE FROM "event"');
-    //     $stmt->execute(); 
-    //     $stmt = $this->con->prepare('DELETE FROM "my_aggregate"');
-    //     $stmt->execute(); 
-    //   }
+      public function cleanDB(BeforeScenarioScope $scope)
+      {
+        $stmt = $this->con->prepare('DELETE FROM "event"');
+        $stmt->execute(); 
+        $stmt = $this->con->prepare('DELETE FROM "my_aggregate"');
+        $stmt->execute(); 
+      }
 
     /**
      * @Given I have access to the event store
@@ -74,6 +74,7 @@ class ProjectEventsContext implements Context
         $stmt = $this->con->prepare(self::RECEIVED_EVENT_INSERT_SQL);
         $stmt->execute($eventData);
         $this->lastEventId = $this->con->lastInsertId();
+        sleep(1);
     }
 
     /**
@@ -81,7 +82,6 @@ class ProjectEventsContext implements Context
      */
     public function iQueryTheApiForAllMyaggregates()
     {
-        sleep(5);
         $this->curl = new Curl();
         $this->curl->get('http://http-api:'.$this->port.$this->basePath.'/my-aggregate');
     }
@@ -105,7 +105,6 @@ class ProjectEventsContext implements Context
      */
     public function iQueryTheApiForMyaggregateById()
     {
-        sleep(5);
         $eventData = json_decode(file_get_contents('/contracts/db/event/MyAggregate/Created.json'), true);
         $this->curl = new Curl();
         $this->curl->get('http://http-api:'.$this->port.$this->basePath.'/my-aggregate/'.$eventData[':aggregate_id']);
