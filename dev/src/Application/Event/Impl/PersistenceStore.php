@@ -32,7 +32,7 @@ class PersistenceStore implements Store
 
     public function getEventStream(int $aggregateId): array
     {
-        return $this->repository->findBy(criteria: ['aggregateId' => $aggregateId], orderBy: ['aggregateVersion' => 'ASC', 'id' => 'ASC']);
+        return $this->repository->findBy(criteria: ['aggregateId' => $aggregateId], orderBy: ['aggregateVersion' => 'ASC', 'timestamp' => 'ASC']);
     }
 
     public function add(Event $event):void{
