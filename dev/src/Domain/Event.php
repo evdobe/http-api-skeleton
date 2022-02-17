@@ -19,41 +19,41 @@ abstract class Event
 {
     public function __construct(
 
-        #[Column(type:"integer")]
+        #[Column(type:"integer", insertable: true, updatable: false)]
         #[Id]
         #[GeneratedValue(strategy:'IDENTITY')]
         private int $id,
 
         private string $name,
 
-        #[Column(type:"string")]
+        #[Column(type:"string", insertable: true, updatable: false)]
         private string $channel,
 
-        #[Column(type:"integer")]
+        #[Column(type:"integer", insertable: true, updatable: false)]
         private int $aggregateId,
 
-        #[Column(type:"integer")]
+        #[Column(type:"integer", insertable: true, updatable: false)]
         private int $aggregateVersion,
 
-        #[Column(type:"json")]
+        #[Column(type:"json", insertable: true, updatable: false)]
         private array $data,
 
-        #[Column(type:"datetime_immutable")]
+        #[Column(type:"datetime_immutable", insertable: true, updatable: false)]
         private DateTimeImmutable $timestamp,
 
-        #[Column(type:"boolean", options:["default" => false])]
+        #[Column(type:"boolean", options:["default" => false], insertable: true, updatable: true)]
         private bool $projected = false,
 
-        #[Column(type:"boolean", options:["default" => false])]
+        #[Column(type:"boolean", options:["default" => false], insertable: true, updatable: false)]
         private bool $dispatched = false,
 
-        #[Column(type:"datetime_immutable", nullable:true)]
+        #[Column(type:"datetime_immutable", nullable:true, insertable: true, updatable: false)]
         private ?DateTimeImmutable $dispatchedAt = null,
 
-        #[Column(type:"integer", nullable:true)]
+        #[Column(type:"integer", nullable:true, insertable: true, updatable: false)]
         private ?int $correlationId = null,
 
-        #[Column(type:"datetime_immutable", nullable:true)]
+        #[Column(type:"datetime_immutable", nullable:true, insertable: true, updatable: false)]
         private ?DateTimeImmutable $receivedAt = null,
 
     ){
