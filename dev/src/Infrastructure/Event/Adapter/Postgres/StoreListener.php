@@ -20,7 +20,7 @@ class StoreListener implements EventStoreListener
         AS \$function\$
         BEGIN
             IF NEW.projected = false THEN
-                PERFORM pg_notify('projector_event', row_to_json(NEW)::text);
+                PERFORM pg_notify('projector_event', NEW.id::text);
             END IF;
             RETURN NULL;
         END;
@@ -51,9 +51,9 @@ class StoreListener implements EventStoreListener
             echo "Timeout with no messages\n";
             return;
         }
-        $eventData = json_decode($notification['payload'], true);
-        echo "Received notification for event with id = ".$eventData['id']."\n";
-        $store->notify($eventData);
+        $eventId = $notification['payload'];
+        echo "Received notification for event with id = ".$eventId."\n";
+        $store->notify($eventId);
     }
 
     protected function setUpListener(){

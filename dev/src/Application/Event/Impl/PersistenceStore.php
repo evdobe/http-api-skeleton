@@ -45,9 +45,9 @@ class PersistenceStore implements Store
         $this->manager->flush();
     }
 
-    public function notify(array $eventData): void
+    public function notify(int|string $eventId): void
     {
-        $event = $this->repository->find($eventData['id']);
+        $event = $this->repository->find($eventId);
         array_walk($this->projectors, function(Projector $projector) use ($event){
             $projector->project($event);
         });
