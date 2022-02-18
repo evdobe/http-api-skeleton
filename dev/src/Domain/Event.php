@@ -98,4 +98,8 @@ abstract class Event
     public function getTimestamp():DateTimeImmutable{
         return $this->timestamp;
     }
+
+    public function isProjected():bool{
+        return $this->projected;
+    }
 }

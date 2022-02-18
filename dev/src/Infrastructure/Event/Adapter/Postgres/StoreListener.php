@@ -41,7 +41,7 @@ class StoreListener implements EventStoreListener
         $this->setUpListener();
     }
 
-    public function listen(Projector $projector):void{
+    public function listen(Store $store):void{
         if (!$this->listenerSetUp){
             throw new \Exception('Listener is not set up!');
         }
@@ -53,7 +53,7 @@ class StoreListener implements EventStoreListener
         }
         $eventData = json_decode($notification['payload'], true);
         echo "Received notification for event with id = ".$eventData['id']."\n";
-        $projector->project(aggregateId:$eventData['aggregate_id'], triggerEvent:$eventData);
+        $store->notify($eventData);
     }
 
     protected function setUpListener(){

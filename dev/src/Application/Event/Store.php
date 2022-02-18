@@ -17,4 +17,6 @@ interface Store
 
     public function add(Event $event):void;
 
+    public function notify(array $eventData):void;
+
 }

@@ -17,9 +17,10 @@ class PersistenceProjector implements Projector
         $this->manager->open();
     }
 
-    public function project(int $aggregateId, ?array $triggerEvent = null)
+    public function project(Event $event)
     {
-        if ($triggerEvent && $triggerEvent['projected']){
+        $aggregateId = $event->getAggregateId();
+        if ($event->isProjected()){
             echo "The new event with id = ".$aggregateId." is already projected. Nothing to do!\n";
             return;
         }
@@ -68,11 +69,8 @@ class PersistenceProjector implements Projector
     {
         echo "Quering for unprojected events ...\n";
         $unprojectedEvents = $this->store->getUnprojectedEvents();
-        $aggregateIds = array_unique(array_map(function(Event $event){
-            return $event->getAggregateId();
-        }, $unprojectedEvents));
-        array_walk($aggregateIds, function (int $id){
-            $this->project(aggregateId:$id);
+        array_walk($unprojectedEvents, function (Event $event){
+            $this->project($event);
         });
     }
 

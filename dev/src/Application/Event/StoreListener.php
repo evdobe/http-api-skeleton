@@ -6,5 +6,5 @@ interface StoreListener
 {
     public function __construct();
 
-    public function listen(Projector $projector):void;
+    public function listen(Store $store):void;
 }

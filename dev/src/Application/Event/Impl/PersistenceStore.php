@@ -13,6 +13,8 @@ class PersistenceStore implements Store
 {
     protected Repository $repository;
 
+    protected array $projectors = [];
+
     public function __construct(protected Manager $manager, protected ?StoreListener $listener = null)
     {
         $this->repository = $manager->getRepository(Event::class);
@@ -23,7 +25,10 @@ class PersistenceStore implements Store
         if (empty($this->listener)){
             throw new \Exception('No listener provided!');
         }
-        $this->listener->listen($projector);
+        if (!in_array($projector, $this->projectors)){
+            $this->projectors[] = $projector;
+        }
+        $this->listener->listen($this, $projector);
     }
 
     public function getUnprojectedEvents():array{
@@ -40,4 +45,11 @@ class PersistenceStore implements Store
         $this->manager->flush();
     }
 
+    public function notify(array $eventData): void
+    {
+        $event = $this->repository->find($eventData['id']);
+        array_walk($this->projectors, function(Projector $projector) use ($event){
+            $projector->project($event);
+        });
+    }
 }
