@@ -5,10 +5,14 @@ namespace Application\Event\Impl;
 use Application\Event\Projector;
 use Application\Event\Store;
 use Application\Persistence\Manager;
+use Doctrine\DBAL\Exception\ConnectionException;
+use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Domain\Event;
 use Domain\EventApplyFailedEvent;
 use Domain\Exception\EventApplyException;
 use Domain\MyAggregate;
+use PDOException;
 
 class PersistenceProjector implements Projector
 {
@@ -24,7 +28,7 @@ class PersistenceProjector implements Projector
             echo "The new event with id = ".$aggregateId." is already projected. Nothing to do!\n";
             return;
         }
-        echo "Projecting aggregate with id = ".$aggregateId."\n";
+        echo "Projecting aggregate with id = ".$aggregateId."... ";
         $eventStream = $this->store->getEventStream(aggregateId:$aggregateId);
         $this->manager->beginTransaction();
         try {
@@ -33,6 +37,7 @@ class PersistenceProjector implements Projector
             $this->setProjected($eventStream);
             $this->manager->flush();
             $this->manager->commit();
+            echo "Done.\n";
         }
         catch (EventApplyException $e){
             $this->manager->rollBack();
@@ -51,6 +56,13 @@ class PersistenceProjector implements Projector
                 projected: true
             );
             $this->store->add($failedEvent);
+            echo "Error! EventApplyFailedEvent occured.\n";
+        }
+        catch (UniqueConstraintViolationException $e){
+            $this->manager->rollBack();
+            $this->manager->open();
+            echo "Aborting on UniqueConstraintViolationException.\n";
+            
         }
         catch (\Exception $e){
             $this->manager->rollBack();

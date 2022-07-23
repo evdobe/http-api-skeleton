@@ -1,0 +1,121 @@
+services:
+  http-api-1:
+    build: ../cont/http-api
+    environment:
+      APPLICATION_ENVIRONMENT: ${APPLICATION_ENVIRONMENT}
+      HOST_GID: ${HOST_UID}
+      HOST_UID: ${HOST_UID}
+      PROJECT_NAME: ${PROJECT_NAME}
+      PROJECT_ORG: ${PROJECT_ORG}
+      PROJECT_DESCRIPTION: ${PROJECT_DESCRIPTION}
+      PROJECT_AUTHORS: ${PROJECT_AUTHORS}
+      HTTP_PORT: ${HTTP_PORT}
+      HEALTHCHECK_HTTP_PATH: ${HEALTHCHECK_HTTP_PATH}
+      BASE_HTTP_PATH: ${BASE_HTTP_PATH}
+      TZ: ${TIME_ZONE}
+      AUTORELOAD_PROGRAMS: "swoole"
+      AUTORELOAD_ANY_FILES: 0
+      DB_HOST: db
+      DB_NAME: "${DB_NAME}"
+      DB_USER: "${DB_USER}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+    expose: 
+    - ${HTTP_PORT}
+    ports: 
+    - 9501:${HTTP_PORT}
+    volumes:
+    - ../../../../dev:/var/www
+    - ../../../../contracts:/contracts
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${HTTP_PORT}${HEALTHCHECK_HTTP_PATH}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: on-failure
+  http-api-2:
+    build: ../cont/http-api
+    environment:
+      APPLICATION_ENVIRONMENT: ${APPLICATION_ENVIRONMENT}
+      HOST_GID: ${HOST_UID}
+      HOST_UID: ${HOST_UID}
+      PROJECT_NAME: ${PROJECT_NAME}
+      PROJECT_ORG: ${PROJECT_ORG}
+      PROJECT_DESCRIPTION: ${PROJECT_DESCRIPTION}
+      PROJECT_AUTHORS: ${PROJECT_AUTHORS}
+      HTTP_PORT: ${HTTP_PORT}
+      HEALTHCHECK_HTTP_PATH: ${HEALTHCHECK_HTTP_PATH}
+      BASE_HTTP_PATH: ${BASE_HTTP_PATH}
+      TZ: ${TIME_ZONE}
+      AUTORELOAD_PROGRAMS: "swoole"
+      AUTORELOAD_ANY_FILES: 0
+      DB_HOST: db
+      DB_NAME: "${DB_NAME}"
+      DB_USER: "${DB_USER}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+    expose: 
+    - ${HTTP_PORT}
+    ports: 
+    - 9502:${HTTP_PORT}
+    volumes:
+    - ../../../../dev:/var/www
+    - ../../../../contracts:/contracts
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${HTTP_PORT}${HEALTHCHECK_HTTP_PATH}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: on-failure
+  http-api-3:
+    build: ../cont/http-api
+    environment:
+      APPLICATION_ENVIRONMENT: ${APPLICATION_ENVIRONMENT}
+      HOST_GID: ${HOST_UID}
+      HOST_UID: ${HOST_UID}
+      PROJECT_NAME: ${PROJECT_NAME}
+      PROJECT_ORG: ${PROJECT_ORG}
+      PROJECT_DESCRIPTION: ${PROJECT_DESCRIPTION}
+      PROJECT_AUTHORS: ${PROJECT_AUTHORS}
+      HTTP_PORT: ${HTTP_PORT}
+      HEALTHCHECK_HTTP_PATH: ${HEALTHCHECK_HTTP_PATH}
+      BASE_HTTP_PATH: ${BASE_HTTP_PATH}
+      TZ: ${TIME_ZONE}
+      AUTORELOAD_PROGRAMS: "swoole"
+      AUTORELOAD_ANY_FILES: 0
+      DB_HOST: db
+      DB_NAME: "${DB_NAME}"
+      DB_USER: "${DB_USER}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+    expose: 
+    - ${HTTP_PORT}
+    ports: 
+    - 9503:${HTTP_PORT}
+    volumes:
+    - ../../../../dev:/var/www
+    - ../../../../contracts:/contracts
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${HTTP_PORT}${HEALTHCHECK_HTTP_PATH}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: on-failure
+  db:
+    build: ../cont/db
+    environment:
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_DB: "${DB_NAME}"
+      POSTGRES_HOST_AUTH_METHOD: trust
+    expose:
+      - 5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: on-failure

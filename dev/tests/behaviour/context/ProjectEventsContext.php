@@ -27,6 +27,8 @@ class ProjectEventsContext implements Context
 
     protected int $port;
 
+    protected string $host;
+
     protected string $basePath;
 
     /**
@@ -40,6 +42,7 @@ class ProjectEventsContext implements Context
     {
         $this->con = new PDO("pgsql:host=".getenv('DB_HOST').";dbname=".getenv('DB_NAME'), getenv('DB_USER'), getenv('DB_PASSWORD'));
         $this->port = getenv('HTTP_PORT');
+        $this->host = getenv('HTTP_HOST')?:'localhost';
         $this->basePath = getenv('BASE_HTTP_PATH');
     }
 
@@ -83,7 +86,7 @@ class ProjectEventsContext implements Context
     public function iQueryTheApiForAllMyaggregates()
     {
         $this->curl = new Curl();
-        $this->curl->get('http://http-api:'.$this->port.$this->basePath.'/my-aggregate');
+        $this->curl->get('http://'.$this->host.':'.$this->port.$this->basePath.'/my-aggregate');
     }
 
     /**
@@ -107,7 +110,7 @@ class ProjectEventsContext implements Context
     {
         $eventData = json_decode(file_get_contents('/contracts/db/event/MyAggregate/Created.json'), true);
         $this->curl = new Curl();
-        $this->curl->get('http://http-api:'.$this->port.$this->basePath.'/my-aggregate/'.$eventData[':aggregate_id']);
+        $this->curl->get('http://'.$this->host.':'.$this->port.$this->basePath.'/my-aggregate/'.$eventData[':aggregate_id']);
     }
 
     /**

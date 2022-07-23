@@ -2,7 +2,7 @@ Feature: Project events
     In order to maintain a querable representation of entities
     I should be able to project events on aggeregate tables
 
-@database
+@database @get-all-aggregates
 Scenario: Get new myaggregate in all myaggregates
     Given I have access to the event store
     And A new myaggregate created event has been added to event store
